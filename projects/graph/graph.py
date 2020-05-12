@@ -33,30 +33,46 @@ class Graph:
         beginning from starting_vertex.
         """
         q = Queue()
-        q.enqueue(starting_vertex)
         visited = set()
+        q.enqueue(starting_vertex)
         while q.size() > 0:
             v = q.dequeue()
             if v not in visited:
+                print(v)
                 visited.add(v)
-                for next_vert in self.get_neighbors(v):
-                    q.enqueue(next_vert)
+                for vert in self.get_neighbors(v):
+                    q.enqueue(vert)
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        s = Stack()
+        visited = set()
+        s.push(starting_vertex)
+        while s.size() > 0:
+            v = s.pop()
+            if v not in visited:
+                print(v)
+                visited.add(v)
+                for vert in self.get_neighbors(v):
+                    s.push(vert)
 
-    def dft_recursive(self, starting_vertex):
+    def dft_recursive(self, starting_vertex, visited=None):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
 
         This should be done using recursion.
         """
-        pass  # TODO
+        if visited is None:
+            visited = set()
+        if starting_vertex not in visited:
+            print(starting_vertex)
+            visited.add(starting_vertex)
+            for vertex in self.vertices[starting_vertex]:
+                self.dft_recursive(vertex, visited)
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -64,7 +80,21 @@ class Graph:
         starting_vertex to destination_vertex in
         breath-first order.
         """
-        pass  # TODO
+        q = Queue()
+        visited = set()
+        q.enqueue([starting_vertex])
+        while q.size() > 0:
+            path = q.dequeue()
+            v = path[-1]
+            if v == destination_vertex:
+                return path
+            if v not in visited:
+                visited.add(v)
+                for vert in self.vertices[v]:
+                    new_path = path.copy()
+                    new_path.append(vert)
+                    q.enqueue(new_path)
+        return None
 
     def dfs(self, starting_vertex, destination_vertex):
         """
@@ -72,9 +102,23 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        pass  # TODO
+        q = Queue()
+        visited = set()
+        q.enqueue([starting_vertex])
+        while q.size() > 0:
+            path = q.dequeue()
+            v = path[-1]
+            if v == destination_vertex:
+                return path
+            if v not in visited:
+                visited.add(v)
+                for vert in self.vertices[v]:
+                    new_path = path.copy()
+                    new_path.append(vert)
+                    q.enqueue(new_path)
+        return None
 
-    def dfs_recursive(self, starting_vertex, destination_vertex):
+    def dfs_recursive(self, starting_vertex, destination_vertex, cache={}):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -82,8 +126,21 @@ class Graph:
 
         This should be done using recursion.
         """
-        pass  # TODO
+        if starting_vertex not in cache:
+            cache[starting_vertex] = [starting_vertex]
 
+        neighbors = self.get_neighbors(starting_vertex)
+        if len(neighbors) > 0:
+            for n in neighbors:
+                if n not in cache:
+                    cache[n] = cache[starting_vertex] + [n]
+
+                    if n == destination_vertex:
+                        return cache[n]
+                    else:
+                        results = self.dfs_recursive(n, destination_vertex, cache)
+                        if results is not None:
+                            return results
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
     # https://github.com/LambdaSchool/Graphs/blob/master/objectives/breadth-first-search/img/bfs-visit-order.png
