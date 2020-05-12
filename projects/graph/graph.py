@@ -66,13 +66,21 @@ class Graph:
 
         This should be done using recursion.
         """
+        # if visited is None:
+        #     visited = set()
+        # if starting_vertex not in visited:
+        #     print(starting_vertex)
+        #     visited.add(starting_vertex)
+        #     for vertex in self.vertices[starting_vertex]:
+        #         self.dft_recursive(vertex, visited)
+
+        print(starting_vertex)
         if visited is None:
             visited = set()
-        if starting_vertex not in visited:
-            print(starting_vertex)
-            visited.add(starting_vertex)
-            for vertex in self.vertices[starting_vertex]:
-                self.dft_recursive(vertex, visited)
+        visited.add(starting_vertex)
+        for child_vert in self.vertices[starting_vertex]:
+            if child_vert not in visited:
+                self.dft_recursive(child_vert, visited)
 
     def bfs(self, starting_vertex, destination_vertex):
         """
@@ -116,7 +124,8 @@ class Graph:
             if v not in visited:
                 visited.add(v)
                 for vert in self.vertices[v]:
-                    new_path = path.copy()
+                    # new_path = path.copy()
+                    new_path = list(path)
                     new_path.append(vert)
                     if new_path[-1] == destination_vertex:
                         return new_path
@@ -125,7 +134,7 @@ class Graph:
         return None
 
 
-    def dfs_recursive(self, starting_vertex, destination_vertex, cache={}):
+    # def dfs_recursive(self, starting_vertex, destination_vertex, cache={}):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -133,22 +142,47 @@ class Graph:
 
         This should be done using recursion.
         """
-        if starting_vertex not in cache:
-            cache[starting_vertex] = [starting_vertex]
-        # print(cache)
-        neighbors = self.get_neighbors(starting_vertex)
-        # print(neighbors)
-        if len(neighbors) > 0:
-            for n in neighbors:
-                if n not in cache:
-                    cache[n] = cache[starting_vertex] + [n]
+        # if starting_vertex not in cache:
+        #     cache[starting_vertex] = [starting_vertex]
+        # # print(cache)
+        # neighbors = self.get_neighbors(starting_vertex)
+        # # print(neighbors)
+        # if len(neighbors) > 0:
+        #     for n in neighbors:
+        #         if n not in cache:
+        #             cache[n] = cache[starting_vertex] + [n]
 
-                    if n == destination_vertex:
-                        return cache[n]
-                    else:
-                        results = self.dfs_recursive(n, destination_vertex, cache)
-                        if results is not None:
-                            return results
+        #             if n == destination_vertex:
+        #                 return cache[n]
+        #             else:
+        #                 results = self.dfs_recursive(n, destination_vertex, cache)
+        #                 if results is not None:
+        #                     return results
+
+    def dfs_recursive(self, starting_vertex, target_value, visited=None, path=None):
+        # print(starting_vertex)
+
+        if visited is None:
+            visited = set()
+
+        if path is None:
+            path = []
+
+        visited.add(starting_vertex)
+
+        path = path + [starting_vertex]
+
+        if starting_vertex == target_value:
+            return path
+
+        for child_vert in self.vertices[starting_vertex]:
+            if child_vert not in visited:
+                new_path = self.dfs_recursive(child_vert, target_value, visited, path)
+
+                if new_path:
+                    return new_path
+        return None
+
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
     # https://github.com/LambdaSchool/Graphs/blob/master/objectives/breadth-first-search/img/bfs-visit-order.png
