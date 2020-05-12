@@ -91,7 +91,10 @@ class Graph:
             if v not in visited:
                 visited.add(v)
                 for vert in self.vertices[v]:
-                    new_path = path.copy()
+                    # print('path', path)
+                    # new_path = path.copy()
+                    new_path = list(path)
+                    # print('new path', new_path)
                     new_path.append(vert)
                     q.enqueue(new_path)
         return None
@@ -102,11 +105,11 @@ class Graph:
         starting_vertex to destination_vertex in
         depth-first order.
         """
-        q = Queue()
+        s = Stack()
         visited = set()
-        q.enqueue([starting_vertex])
-        while q.size() > 0:
-            path = q.dequeue()
+        s.push([starting_vertex])
+        while s.size() > 0:
+            path = s.pop()
             v = path[-1]
             if v == destination_vertex:
                 return path
@@ -115,8 +118,12 @@ class Graph:
                 for vert in self.vertices[v]:
                     new_path = path.copy()
                     new_path.append(vert)
-                    q.enqueue(new_path)
+                    if new_path[-1] == destination_vertex:
+                        return new_path
+                    else:
+                        s.push(new_path)
         return None
+
 
     def dfs_recursive(self, starting_vertex, destination_vertex, cache={}):
         """
@@ -128,8 +135,9 @@ class Graph:
         """
         if starting_vertex not in cache:
             cache[starting_vertex] = [starting_vertex]
-
+        # print(cache)
         neighbors = self.get_neighbors(starting_vertex)
+        # print(neighbors)
         if len(neighbors) > 0:
             for n in neighbors:
                 if n not in cache:
