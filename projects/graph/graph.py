@@ -98,12 +98,14 @@ class Graph:
                 return path
             if v not in visited:
                 visited.add(v)
-                for vert in self.vertices[v]:
+                # for vert in self.vertices[v]:
+                for neighbor in self.get_neighbors(v):
                     # print('path', path)
                     # new_path = path.copy()
                     new_path = list(path)
                     # print('new path', new_path)
-                    new_path.append(vert)
+                    # new_path.append(vert)
+                    new_path.append(neighbor)
                     q.enqueue(new_path)
         return None
 
@@ -116,17 +118,23 @@ class Graph:
         s = Stack()
         visited = set()
         s.push([starting_vertex])
+        # print([starting_vertex])
+        # print(starting_vertex)
         while s.size() > 0:
             path = s.pop()
+            # print(path)
             v = path[-1]
+            # print(v)
             if v == destination_vertex:
                 return path
             if v not in visited:
                 visited.add(v)
-                for vert in self.vertices[v]:
+                # for vert in self.vertices[v]:
+                for neighbor in self.get_neighbors(v):
                     # new_path = path.copy()
                     new_path = list(path)
-                    new_path.append(vert)
+                    # new_path.append(vert)
+                    new_path.append(neighbor)
                     if new_path[-1] == destination_vertex:
                         return new_path
                     else:
@@ -134,7 +142,6 @@ class Graph:
         return None
 
 
-    # def dfs_recursive(self, starting_vertex, destination_vertex, cache={}):
         """
         Return a list containing a path from
         starting_vertex to destination_vertex in
@@ -142,22 +149,6 @@ class Graph:
 
         This should be done using recursion.
         """
-        # if starting_vertex not in cache:
-        #     cache[starting_vertex] = [starting_vertex]
-        # # print(cache)
-        # neighbors = self.get_neighbors(starting_vertex)
-        # # print(neighbors)
-        # if len(neighbors) > 0:
-        #     for n in neighbors:
-        #         if n not in cache:
-        #             cache[n] = cache[starting_vertex] + [n]
-
-        #             if n == destination_vertex:
-        #                 return cache[n]
-        #             else:
-        #                 results = self.dfs_recursive(n, destination_vertex, cache)
-        #                 if results is not None:
-        #                     return results
 
     def dfs_recursive(self, starting_vertex, target_value, visited=None, path=None):
         # print(starting_vertex)
